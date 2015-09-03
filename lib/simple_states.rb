@@ -74,5 +74,10 @@ module SimpleStates
   def method_missing(method, *args, &block)
     method.to_s =~ /(was_|^)(#{self.class.states.join('|')})\?$/ ? send(:"#{$1}state?", $2, *args) : super
   end
-end
 
+  def trigger(name)
+    found_event = self.class.events.find { |event| event.name == name }
+    return send(found_event.name) unless found_event.nil?
+    raise TransitionException, "cannot trigger event #{name}, event does not exist"
+  end
+end

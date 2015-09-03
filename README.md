@@ -117,3 +117,14 @@ foo.finished_at      # Time.now
 foo.was_created?     # true
 foo.was_started?     # true
 ```
+
+You can also use the `trigger` method:
+
+```ruby
+foo = Foo.new
+
+foo.trigger(:finish)
+
+foo.state            # :finished
+foo.finished?        # true
+```

@@ -38,6 +38,22 @@ class StatesTest < Test::Unit::TestCase
     assert_nothing_raised(SimpleStates::TransitionException) { object.start }
   end
 
+  test "triggers an event" do
+    klass = create_class { states :created, :started; event :start, :from => :created, :to => :started }
+    object = klass.new
+
+    assert object.state?(:created)
+
+    object.trigger(:start)
+
+    assert object.state?(:started)
+  end
+
+  test "raises TransitionException if event does not exist" do
+    object = create_class { event :finish }.new
+    assert_raises(SimpleStates::TransitionException) { object.trigger(:start) }
+  end
+
   test "state? returns true if the object has the given state" do
     object = create_class { event :start, :from => :created, :to => :started }.new
 
